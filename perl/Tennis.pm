@@ -2,8 +2,7 @@ use 5.38.0;
 
 package Tennis::Game1 {
 
-    sub new {
-        my ($cls, $player1Name, $player2Name) = @_;
+    sub new ($cls, $player1Name, $player2Name) {
         my $self = {
             player1Name => $player1Name,
             player2Name => $player2Name,
@@ -13,8 +12,7 @@ package Tennis::Game1 {
         return bless $self, $cls;
     }
 
-    sub won_point {
-        my ($self, $playerName) = @_;
+    sub won_point ($self, $playerName) {
         if ($playerName eq $self->{player1Name}) {
             $self->{p1points}++;
         }
@@ -23,8 +21,7 @@ package Tennis::Game1 {
         }
     }
 
-    sub score {
-        my $self      = shift;
+    sub score ($self) {
         my $result    = "";
         my $tempScore = 0;
 
@@ -79,8 +76,7 @@ package Tennis::Game1 {
 
 package Tennis::Game2 {
 
-    sub new {
-        my ($cls, $player1Name, $player2Name) = @_;
+    sub new ($cls, $player1Name, $player2Name) {
         my $self = {
             player1Name => $player1Name,
             player2Name => $player2Name,
@@ -90,8 +86,7 @@ package Tennis::Game2 {
         return bless $self, $cls;
     }
 
-    sub won_point {
-        my ($self, $playerName) = @_;
+    sub won_point ($self, $playerName) {
         if ($playerName eq $self->{player1Name}) {
             $self->{p1points}++;
         }
@@ -100,8 +95,7 @@ package Tennis::Game2 {
         }
     }
 
-    sub score {
-        my $self   = shift;
+    sub score ($self) {
         my $result = "";
         if ($self->{p1points} == $self->{p2points} && $self->{p1points} < 3) {
             if ($self->{p1points} == 0) {
@@ -202,27 +196,23 @@ package Tennis::Game2 {
         return $result;
     }
 
-    sub SetP1Score {
-        my ($self, $number) = @_;
+    sub SetP1Score ($self, $number) {
         for (0 .. $number) {
             $self->P1Score();
         }
     }
 
-    sub SetP2Score {
-        my ($self, $number) = @_;
+    sub SetP2Score ($self, $number) {
         for (0 .. $number) {
             $self->P2Score();
         }
     }
 
-    sub P1Score {
-        my $self = shift;
+    sub P1Score ($self) {
         $self->{p1points} += 1;
     }
 
-    sub P2Score {
-        my $self = shift;
+    sub P2Score ($self) {
         $self->{p2points} += 1;
     }
 
@@ -230,8 +220,7 @@ package Tennis::Game2 {
 
 package Tennis::Game3 {
 
-    sub new {
-        my ($cls, $player1Name, $player2Name) = @_;
+    sub new ($cls, $player1Name, $player2Name) {
         my $self = {
             player1Name => $player1Name,
             player2Name => $player2Name,
@@ -241,8 +230,7 @@ package Tennis::Game3 {
         return bless $self, $cls;
     }
 
-    sub won_point {
-        my ($self, $playerName) = @_;
+    sub won_point ($self, $playerName) {
         if ($playerName eq $self->{player1Name}) {
             $self->{p1points}++;
         }
@@ -251,8 +239,7 @@ package Tennis::Game3 {
         }
     }
 
-    sub score {
-        my $self = shift;
+    sub score ($self) {
         my ($p1points, $p2points) = @$self{ "p1points", "p2points" };
 
         if (($p1points < 4 && $p2points < 4) && ($p1points + $p2points < 6)) {
