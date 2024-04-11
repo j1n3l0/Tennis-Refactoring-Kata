@@ -231,38 +231,39 @@ package Tennis::Game2 {
 package Tennis::Game3 {
 
     sub new {
-        bless {
-            p1N => $_[1],
-            p2N => $_[2],
-            p1  => 0,
-            p2  => 0,
-            },
-            $_[0];
+        my ($cls, $player1Name, $player2Name) = @_;
+        my $self = {
+            player1Name => $player1Name,
+            player2Name => $player2Name,
+            p1points    => 0,
+            p2points    => 0,
+        };
+        return bless $self, $cls;
     }
 
     sub won_point {
-        my ($self, $n) = @_;
-        if ($n eq $self->{p1N}) {
-            $self->{p1}++;
+        my ($self, $playerName) = @_;
+        if ($playerName eq $self->{player1Name}) {
+            $self->{p1points}++;
         }
         else {
-            $self->{p2}++;
+            $self->{p2points}++;
         }
     }
 
     sub score {
         my $self = shift;
-        my ($p1, $p2) = @$self{ "p1", "p2" };
+        my ($p1points, $p2points) = @$self{ "p1points", "p2points" };
 
-        if (($p1 < 4 && $p2 < 4) && ($p1 + $p2 < 6)) {
+        if (($p1points < 4 && $p2points < 4) && ($p1points + $p2points < 6)) {
             my @p = ("Love", "Fifteen", "Thirty", "Forty");
-            my $s = $p[$p1];
-            $p1 == $p2 ? "$s-All" : $s . "-" . $p[$p2];
+            my $s = $p[$p1points];
+            $p1points == $p2points ? "$s-All" : $s . "-" . $p[$p2points];
         }
         else {
-            return "Deuce" if ($p1 == $p2);
-            my $s = $p1 > $p2 ? $self->{p1N} : $self->{p2N};
-            (($p1 - $p2) * ($p1 - $p2) == 1) ? "Advantage $s" : "Win for $s";
+            return "Deuce" if ($p1points == $p2points);
+            my $s = $p1points > $p2points ? $self->{player1Name} : $self->{player2Name};
+            (($p1points - $p2points) * ($p1points - $p2points) == 1) ? "Advantage $s" : "Win for $s";
         }
     }
 
