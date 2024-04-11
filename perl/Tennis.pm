@@ -13,7 +13,7 @@ class Tennis::Game1 :repr(HASH) {
         return bless $self, $cls;
     }
 
-    sub won_point ($self, $playerName) {
+    method won_point ($playerName) {
         if ($playerName eq $self->{player1Name}) {
             $self->{p1points}++;
         }
@@ -22,7 +22,7 @@ class Tennis::Game1 :repr(HASH) {
         }
     }
 
-    sub score ($self) {
+    method score () {
         my $result    = "";
         my $tempScore = 0;
 
@@ -87,7 +87,7 @@ class Tennis::Game2 :repr(HASH) {
         return bless $self, $cls;
     }
 
-    sub won_point ($self, $playerName) {
+    method won_point ($playerName) {
         if ($playerName eq $self->{player1Name}) {
             $self->{p1points}++;
         }
@@ -96,7 +96,7 @@ class Tennis::Game2 :repr(HASH) {
         }
     }
 
-    sub score ($self) {
+    method score () {
         my $result = "";
         if ($self->{p1points} == $self->{p2points} && $self->{p1points} < 3) {
             if ($self->{p1points} == 0) {
@@ -197,23 +197,23 @@ class Tennis::Game2 :repr(HASH) {
         return $result;
     }
 
-    sub SetP1Score ($self, $number) {
+    method SetP1Score ($number) {
         for (0 .. $number) {
             $self->P1Score();
         }
     }
 
-    sub SetP2Score ($self, $number) {
+    method SetP2Score ($number) {
         for (0 .. $number) {
             $self->P2Score();
         }
     }
 
-    sub P1Score ($self) {
+    method P1Score () {
         $self->{p1points} += 1;
     }
 
-    sub P2Score ($self) {
+    method P2Score () {
         $self->{p2points} += 1;
     }
 
@@ -231,7 +231,7 @@ class Tennis::Game3 :repr(HASH) {
         return bless $self, $cls;
     }
 
-    sub won_point ($self, $playerName) {
+    method won_point ($playerName) {
         if ($playerName eq $self->{player1Name}) {
             $self->{p1points}++;
         }
@@ -240,7 +240,7 @@ class Tennis::Game3 :repr(HASH) {
         }
     }
 
-    sub score ($self) {
+    method score () {
         my ($p1points, $p2points) = @$self{ "p1points", "p2points" };
 
         if (($p1points < 4 && $p2points < 4) && ($p1points + $p2points < 6)) {
