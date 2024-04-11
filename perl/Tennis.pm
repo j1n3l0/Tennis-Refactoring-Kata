@@ -1,5 +1,4 @@
-use strict;
-use warnings;
+use 5.38.0;
 
 package Tennis::Game1 {
 

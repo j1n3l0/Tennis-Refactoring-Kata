@@ -1,7 +1,4 @@
-#!/usr/bin/env perl
-
-use strict;
-use warnings;
+use 5.38.0;
 
 use Test::More;
 
