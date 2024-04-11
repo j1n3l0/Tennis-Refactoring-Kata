@@ -1,24 +1,21 @@
 use 5.38.0;
 use Object::Pad 0.808;
 
-class Tennis::Game1 :repr(HASH) {
+class Tennis::Game1 {
 
-    sub new ($cls, $player1Name, $player2Name) {
-        my $self = {
-            player1Name => $player1Name,
-            player2Name => $player2Name,
-            p1points    => 0,
-            p2points    => 0,
-        };
-        return bless $self, $cls;
-    }
+    field $player1Name;
+    field $player2Name;
+    field $p1points = 0;
+    field $p2points = 0;
+
+    BUILD (@playerNames) { ($player1Name, $player2Name) = @playerNames };
 
     method won_point ($playerName) {
-        if ($playerName eq $self->{player1Name}) {
-            $self->{p1points}++;
+        if ($playerName eq $player1Name) {
+            $p1points++;
         }
         else {
-            $self->{p2points}++;
+            $p2points++;
         }
     }
 
@@ -26,39 +23,39 @@ class Tennis::Game1 :repr(HASH) {
         my $result    = "";
         my $tempScore = 0;
 
-        if ($self->{p1points} == $self->{p2points}) {
+        if ($p1points == $p2points) {
             $result = {
                 0 => "Love-All",
                 1 => "Fifteen-All",
                 2 => "Thirty-All",
-            }->{ $self->{p1points} }
+            }->{ $p1points }
                 || "Deuce";
         }
 
-        elsif ($self->{p1points} >= 4 or $self->{p2points} >= 4) {
-            my $minusResult = $self->{p1points} - $self->{p2points};
+        elsif ($p1points >= 4 or $p2points >= 4) {
+            my $minusResult = $p1points - $p2points;
             if ($minusResult == 1) {
-                $result = "Advantage " . $self->{player1Name};
+                $result = "Advantage " . $player1Name;
             }
             elsif ($minusResult == -1) {
-                $result = "Advantage " . $self->{player2Name};
+                $result = "Advantage " . $player2Name;
             }
             elsif ($minusResult >= 2) {
-                $result = "Win for " . $self->{player1Name};
+                $result = "Win for " . $player1Name;
             }
             else {
-                $result = "Win for " . $self->{player2Name};
+                $result = "Win for " . $player2Name;
             }
         }
 
         else {
             foreach my $i (1 .. 2) {
                 if ($i == 1) {
-                    $tempScore = $self->{p1points};
+                    $tempScore = $p1points;
                 }
                 else {
                     $result .= "-";
-                    $tempScore = $self->{p2points};
+                    $tempScore = $p2points;
                 }
 
                 $result .= {
@@ -75,124 +72,121 @@ class Tennis::Game1 :repr(HASH) {
 
 };
 
-class Tennis::Game2 :repr(HASH) {
+class Tennis::Game2 {
 
-    sub new ($cls, $player1Name, $player2Name) {
-        my $self = {
-            player1Name => $player1Name,
-            player2Name => $player2Name,
-            p1points    => 0,
-            p2points    => 0,
-        };
-        return bless $self, $cls;
-    }
+    field $player1Name;
+    field $player2Name;
+    field $p1points = 0;
+    field $p2points = 0;
+
+    BUILD (@playerNames) { ($player1Name, $player2Name) = @playerNames };
 
     method won_point ($playerName) {
-        if ($playerName eq $self->{player1Name}) {
-            $self->{p1points}++;
+        if ($playerName eq $player1Name) {
+            $p1points++;
         }
         else {
-            $self->{p2points}++;
+            $p2points++;
         }
     }
 
     method score () {
         my $result = "";
-        if ($self->{p1points} == $self->{p2points} && $self->{p1points} < 3) {
-            if ($self->{p1points} == 0) {
+        if ($p1points == $p2points && $p1points < 3) {
+            if ($p1points == 0) {
                 $result = "Love";
             }
-            if ($self->{p1points} == 1) {
+            if ($p1points == 1) {
                 $result = "Fifteen";
             }
-            if ($self->{p1points} == 2) {
+            if ($p1points == 2) {
                 $result = "Thirty";
             }
             $result .= "-All";
         }
-        if ($self->{p1points} == $self->{p2points} and $self->{p1points} > 2) {
+        if ($p1points == $p2points and $p1points > 2) {
             $result = "Deuce";
         }
 
         my $P1res = "";
         my $P2res = "";
-        if ($self->{p1points} > 0 && $self->{p2points} == 0) {
-            if ($self->{p1points} == 1) {
+        if ($p1points > 0 && $p2points == 0) {
+            if ($p1points == 1) {
                 $P1res = "Fifteen";
             }
-            if ($self->{p1points} == 2) {
+            if ($p1points == 2) {
                 $P1res = "Thirty";
             }
-            if ($self->{p1points} == 3) {
+            if ($p1points == 3) {
                 $P1res = "Forty";
             }
 
             $P2res  = "Love";
             $result = "$P1res-$P2res";
         }
-        if ($self->{p2points} > 0 && $self->{p1points} == 0) {
-            if ($self->{p2points} == 1) {
+        if ($p2points > 0 && $p1points == 0) {
+            if ($p2points == 1) {
                 $P2res = "Fifteen";
             }
-            if ($self->{p2points} == 2) {
+            if ($p2points == 2) {
                 $P2res = "Thirty";
             }
-            if ($self->{p2points} == 3) {
+            if ($p2points == 3) {
                 $P2res = "Forty";
             }
             $P1res  = "Love";
             $result = "$P1res-$P2res";
         }
 
-        if ($self->{p1points} > $self->{p2points} && $self->{p1points} < 4) {
-            if ($self->{p1points} == 2) {
+        if ($p1points > $p2points && $p1points < 4) {
+            if ($p1points == 2) {
                 $P1res = "Thirty";
             }
-            if ($self->{p1points} == 3) {
+            if ($p1points == 3) {
                 $P1res = "Forty";
             }
-            if ($self->{p2points} == 1) {
+            if ($p2points == 1) {
                 $P2res = "Fifteen";
             }
-            if ($self->{p2points} == 2) {
+            if ($p2points == 2) {
                 $P2res = "Thirty";
             }
             $result = "$P1res-$P2res";
         }
-        if ($self->{p2points} > $self->{p1points} && $self->{p2points} < 4) {
-            if ($self->{p2points} == 2) {
+        if ($p2points > $p1points && $p2points < 4) {
+            if ($p2points == 2) {
                 $P2res = "Thirty";
             }
-            if ($self->{p2points} == 3) {
+            if ($p2points == 3) {
                 $P2res = "Forty";
             }
-            if ($self->{p1points} == 1) {
+            if ($p1points == 1) {
                 $P1res = "Fifteen";
             }
-            if ($self->{p1points} == 2) {
+            if ($p1points == 2) {
                 $P1res = "Thirty";
             }
             $result = "$P1res-$P2res";
         }
 
-        if ($self->{p1points} > $self->{p2points} && $self->{p2points} >= 3) {
-            $result = "Advantage " . $self->{player1Name};
+        if ($p1points > $p2points && $p2points >= 3) {
+            $result = "Advantage " . $player1Name;
         }
-        if ($self->{p2points} > $self->{p1points} && $self->{p1points} >= 3) {
-            $result = "Advantage " . $self->{player2Name};
+        if ($p2points > $p1points && $p1points >= 3) {
+            $result = "Advantage " . $player2Name;
         }
 
-        if (   $self->{p1points} >= 4
-            && $self->{p2points} >= 0
-            && ($self->{p1points} - $self->{p2points}) >= 2)
+        if (   $p1points >= 4
+            && $p2points >= 0
+            && ($p1points - $p2points) >= 2)
         {
-            $result = "Win for " . $self->{player1Name};
+            $result = "Win for " . $player1Name;
         }
-        if (   $self->{p2points} >= 4
-            && $self->{p1points} >= 0
-            && ($self->{p2points} - $self->{p1points}) >= 2)
+        if (   $p2points >= 4
+            && $p1points >= 0
+            && ($p2points - $p1points) >= 2)
         {
-            $result = "Win for " . $self->{player2Name};
+            $result = "Win for " . $player2Name;
         }
         return $result;
     }
@@ -210,39 +204,34 @@ class Tennis::Game2 :repr(HASH) {
     }
 
     method P1Score () {
-        $self->{p1points} += 1;
+        $p1points += 1;
     }
 
     method P2Score () {
-        $self->{p2points} += 1;
+        $p2points += 1;
     }
 
 };
 
-class Tennis::Game3 :repr(HASH) {
+class Tennis::Game3 {
 
-    sub new ($cls, $player1Name, $player2Name) {
-        my $self = {
-            player1Name => $player1Name,
-            player2Name => $player2Name,
-            p1points    => 0,
-            p2points    => 0,
-        };
-        return bless $self, $cls;
-    }
+    field $player1Name;
+    field $player2Name;
+    field $p1points = 0;
+    field $p2points = 0;
+
+    BUILD (@playerNames) { ($player1Name, $player2Name) = @playerNames };
 
     method won_point ($playerName) {
-        if ($playerName eq $self->{player1Name}) {
-            $self->{p1points}++;
+        if ($playerName eq $player1Name) {
+            $p1points++;
         }
         else {
-            $self->{p2points}++;
+            $p2points++;
         }
     }
 
     method score () {
-        my ($p1points, $p2points) = @$self{ "p1points", "p2points" };
-
         if (($p1points < 4 && $p2points < 4) && ($p1points + $p2points < 6)) {
             my @p = ("Love", "Fifteen", "Thirty", "Forty");
             my $s = $p[$p1points];
@@ -250,7 +239,7 @@ class Tennis::Game3 :repr(HASH) {
         }
         else {
             return "Deuce" if ($p1points == $p2points);
-            my $s = $p1points > $p2points ? $self->{player1Name} : $self->{player2Name};
+            my $s = $p1points > $p2points ? $player1Name : $player2Name;
             (($p1points - $p2points) * ($p1points - $p2points) == 1) ? "Advantage $s" : "Win for $s";
         }
     }
