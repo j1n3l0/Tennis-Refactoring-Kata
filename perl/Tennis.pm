@@ -1,6 +1,7 @@
 use 5.38.0;
+use Object::Pad 0.808;
 
-package Tennis::Game1 {
+class Tennis::Game1 :repr(HASH) {
 
     sub new ($cls, $player1Name, $player2Name) {
         my $self = {
@@ -74,7 +75,7 @@ package Tennis::Game1 {
 
 };
 
-package Tennis::Game2 {
+class Tennis::Game2 :repr(HASH) {
 
     sub new ($cls, $player1Name, $player2Name) {
         my $self = {
@@ -218,7 +219,7 @@ package Tennis::Game2 {
 
 };
 
-package Tennis::Game3 {
+class Tennis::Game3 :repr(HASH) {
 
     sub new ($cls, $player1Name, $player2Name) {
         my $self = {
