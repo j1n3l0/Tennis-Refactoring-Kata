@@ -1,12 +1,12 @@
 use 5.38.0;
-use Object::Pad 0.808;
+use Object::Pad 0.808 qw( :experimental(inherit_field) );
 
-class Tennis::Game1 {
+class Tennis::Game {
 
-    field $player1Name;
-    field $player2Name;
-    field $p1points = 0;
-    field $p2points = 0;
+    field $player1Name :inheritable;
+    field $player2Name :inheritable;
+    field $p1points    :inheritable = 0;
+    field $p2points    :inheritable = 0;
 
     BUILD (@playerNames) { ($player1Name, $player2Name) = @playerNames };
 
@@ -18,6 +18,12 @@ class Tennis::Game1 {
             $p2points++;
         }
     }
+
+};
+
+class Tennis::Game1 {
+
+    inherit Tennis::Game qw( $player1Name $player2Name $p1points $p2points );
 
     method score () {
         my $result    = "";
@@ -74,21 +80,7 @@ class Tennis::Game1 {
 
 class Tennis::Game2 {
 
-    field $player1Name;
-    field $player2Name;
-    field $p1points = 0;
-    field $p2points = 0;
-
-    BUILD (@playerNames) { ($player1Name, $player2Name) = @playerNames };
-
-    method won_point ($playerName) {
-        if ($playerName eq $player1Name) {
-            $p1points++;
-        }
-        else {
-            $p2points++;
-        }
-    }
+    inherit Tennis::Game qw( $player1Name $player2Name $p1points $p2points );
 
     method score () {
         my $result = "";
@@ -215,21 +207,7 @@ class Tennis::Game2 {
 
 class Tennis::Game3 {
 
-    field $player1Name;
-    field $player2Name;
-    field $p1points = 0;
-    field $p2points = 0;
-
-    BUILD (@playerNames) { ($player1Name, $player2Name) = @playerNames };
-
-    method won_point ($playerName) {
-        if ($playerName eq $player1Name) {
-            $p1points++;
-        }
-        else {
-            $p2points++;
-        }
-    }
+    inherit Tennis::Game qw( $player1Name $player2Name $p1points $p2points );
 
     method score () {
         if (($p1points < 4 && $p2points < 4) && ($p1points + $p2points < 6)) {
