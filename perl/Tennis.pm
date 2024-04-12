@@ -1,67 +1,75 @@
 use 5.38.0;
 use Object::Pad 0.808 qw( :experimental(inherit_field) );
 
+class Tennis::Player {
+
+    field $name   :reader :param;
+    field $points :reader = 0;
+
+    method increment_points () { $points++ };
+
+};
+
 class Tennis::Game {
 
-    field $player1Name :inheritable;
-    field $player2Name :inheritable;
-    field $p1points    :inheritable = 0;
-    field $p2points    :inheritable = 0;
+    field $player_1 :reader;
+    field $player_2 :reader;
 
-    BUILD (@playerNames) { ($player1Name, $player2Name) = @playerNames };
+    BUILD (@playerNames) {
+        ($player_1, $player_2) = map Tennis::Player->new(name => $_), @playerNames;
+    };
 
     method won_point ($playerName) {
-        if ($playerName eq $player1Name) {
-            $p1points++;
+        if ($playerName eq $player_1->name) {
+            $player_1->increment_points;
         }
         else {
-            $p2points++;
+            $player_2->increment_points;
         }
     }
 
 };
 
-class Tennis::Game1 {
 
-    inherit Tennis::Game qw( $player1Name $player2Name $p1points $p2points );
+class Tennis::Game1 :isa(Tennis::Game) {
 
     method score () {
         my $result    = "";
         my $tempScore = 0;
 
-        if ($p1points == $p2points) {
+        if ($self->player_1->points == $self->player_2->points) {
             $result = {
                 0 => "Love-All",
                 1 => "Fifteen-All",
                 2 => "Thirty-All",
-            }->{ $p1points }
+            }->{ $self->player_1->points }
                 || "Deuce";
         }
 
-        elsif ($p1points >= 4 or $p2points >= 4) {
-            my $minusResult = $p1points - $p2points;
+        elsif ($self->player_1->points >= 4 or $self->player_2->points >= 4) {
+            my $minusResult = $self->player_1->points - $self->player_2->points;
             if ($minusResult == 1) {
-                $result = "Advantage " . $player1Name;
+                $result = "Advantage " . $self->player_1->name;
             }
             elsif ($minusResult == -1) {
-                $result = "Advantage " . $player2Name;
+                $result = "Advantage " . $self->player_2->name;
             }
             elsif ($minusResult >= 2) {
-                $result = "Win for " . $player1Name;
+                $result = "Win for " . $self->player_1->name;
             }
             else {
-                $result = "Win for " . $player2Name;
+                $result = "Win for " . $self->player_2->name;
             }
         }
 
         else {
             foreach my $i (1 .. 2) {
                 if ($i == 1) {
-                    $tempScore = $p1points;
+                    $tempScore = $self->player_1->points;
                 }
                 else {
                     $result .= "-";
-                    $tempScore = $p2points;
+                    $tempScore = $self->player_2->points;
                 }
 
                 $result .= {
@@ -78,107 +86,105 @@ class Tennis::Game1 {
 
 };
 
-class Tennis::Game2 {
-
-    inherit Tennis::Game qw( $player1Name $player2Name $p1points $p2points );
+class Tennis::Game2 :isa(Tennis::Game) {
 
     method score () {
         my $result = "";
-        if ($p1points == $p2points && $p1points < 3) {
-            if ($p1points == 0) {
+        if ($self->player_1->points == $self->player_2->points && $self->player_1->points < 3) {
+            if ($self->player_1->points == 0) {
                 $result = "Love";
             }
-            if ($p1points == 1) {
+            if ($self->player_1->points == 1) {
                 $result = "Fifteen";
             }
-            if ($p1points == 2) {
+            if ($self->player_1->points == 2) {
                 $result = "Thirty";
             }
             $result .= "-All";
         }
-        if ($p1points == $p2points and $p1points > 2) {
+        if ($self->player_1->points == $self->player_2->points and $self->player_1->points > 2) {
             $result = "Deuce";
         }
 
         my $P1res = "";
         my $P2res = "";
-        if ($p1points > 0 && $p2points == 0) {
-            if ($p1points == 1) {
+        if ($self->player_1->points > 0 && $self->player_2->points == 0) {
+            if ($self->player_1->points == 1) {
                 $P1res = "Fifteen";
             }
-            if ($p1points == 2) {
+            if ($self->player_1->points == 2) {
                 $P1res = "Thirty";
             }
-            if ($p1points == 3) {
+            if ($self->player_1->points == 3) {
                 $P1res = "Forty";
             }
 
             $P2res  = "Love";
             $result = "$P1res-$P2res";
         }
-        if ($p2points > 0 && $p1points == 0) {
-            if ($p2points == 1) {
+        if ($self->player_2->points > 0 && $self->player_1->points == 0) {
+            if ($self->player_2->points == 1) {
                 $P2res = "Fifteen";
             }
-            if ($p2points == 2) {
+            if ($self->player_2->points == 2) {
                 $P2res = "Thirty";
             }
-            if ($p2points == 3) {
+            if ($self->player_2->points == 3) {
                 $P2res = "Forty";
             }
             $P1res  = "Love";
             $result = "$P1res-$P2res";
         }
 
-        if ($p1points > $p2points && $p1points < 4) {
-            if ($p1points == 2) {
+        if ($self->player_1->points > $self->player_2->points && $self->player_1->points < 4) {
+            if ($self->player_1->points == 2) {
                 $P1res = "Thirty";
             }
-            if ($p1points == 3) {
+            if ($self->player_1->points == 3) {
                 $P1res = "Forty";
             }
-            if ($p2points == 1) {
+            if ($self->player_2->points == 1) {
                 $P2res = "Fifteen";
             }
-            if ($p2points == 2) {
+            if ($self->player_2->points == 2) {
                 $P2res = "Thirty";
             }
             $result = "$P1res-$P2res";
         }
-        if ($p2points > $p1points && $p2points < 4) {
-            if ($p2points == 2) {
+        if ($self->player_2->points > $self->player_1->points && $self->player_2->points < 4) {
+            if ($self->player_2->points == 2) {
                 $P2res = "Thirty";
             }
-            if ($p2points == 3) {
+            if ($self->player_2->points == 3) {
                 $P2res = "Forty";
             }
-            if ($p1points == 1) {
+            if ($self->player_1->points == 1) {
                 $P1res = "Fifteen";
             }
-            if ($p1points == 2) {
+            if ($self->player_1->points == 2) {
                 $P1res = "Thirty";
             }
             $result = "$P1res-$P2res";
         }
 
-        if ($p1points > $p2points && $p2points >= 3) {
-            $result = "Advantage " . $player1Name;
+        if ($self->player_1->points > $self->player_2->points && $self->player_2->points >= 3) {
+            $result = "Advantage " . $self->player_1->name;
         }
-        if ($p2points > $p1points && $p1points >= 3) {
-            $result = "Advantage " . $player2Name;
+        if ($self->player_2->points > $self->player_1->points && $self->player_1->points >= 3) {
+            $result = "Advantage " . $self->player_2->name;
         }
 
-        if (   $p1points >= 4
-            && $p2points >= 0
-            && ($p1points - $p2points) >= 2)
+        if (   $self->player_1->points >= 4
+            && $self->player_2->points >= 0
+            && ($self->player_1->points - $self->player_2->points) >= 2)
         {
-            $result = "Win for " . $player1Name;
+            $result = "Win for " . $self->player_1->name;
         }
-        if (   $p2points >= 4
-            && $p1points >= 0
-            && ($p2points - $p1points) >= 2)
+        if (   $self->player_2->points >= 4
+            && $self->player_1->points >= 0
+            && ($self->player_2->points - $self->player_1->points) >= 2)
         {
-            $result = "Win for " . $player2Name;
+            $result = "Win for " . $self->player_2->name;
         }
         return $result;
     }
@@ -196,29 +202,27 @@ class Tennis::Game2 {
     }
 
     method P1Score () {
-        $p1points += 1;
+        $self->player_1->points += 1;
     }
 
     method P2Score () {
-        $p2points += 1;
+        $self->player_2->points += 1;
     }
 
 };
 
-class Tennis::Game3 {
-
-    inherit Tennis::Game qw( $player1Name $player2Name $p1points $p2points );
+class Tennis::Game3 :isa(Tennis::Game) {
 
     method score () {
-        if (($p1points < 4 && $p2points < 4) && ($p1points + $p2points < 6)) {
+        if (($self->player_1->points < 4 && $self->player_2->points < 4) && ($self->player_1->points + $self->player_2->points < 6)) {
             my @p = ("Love", "Fifteen", "Thirty", "Forty");
-            my $s = $p[$p1points];
-            $p1points == $p2points ? "$s-All" : $s . "-" . $p[$p2points];
+            my $s = $p[$self->player_1->points];
+            $self->player_1->points == $self->player_2->points ? "$s-All" : $s . "-" . $p[$self->player_2->points];
         }
         else {
-            return "Deuce" if ($p1points == $p2points);
-            my $s = $p1points > $p2points ? $player1Name : $player2Name;
-            (($p1points - $p2points) * ($p1points - $p2points) == 1) ? "Advantage $s" : "Win for $s";
+            return "Deuce" if ($self->player_1->points == $self->player_2->points);
+            my $s = $self->player_1->points > $self->player_2->points ? $self->player_1->name : $self->player_2->name;
+            (($self->player_1->points - $self->player_2->points) * ($self->player_1->points - $self->player_2->points) == 1) ? "Advantage $s" : "Win for $s";
         }
     }
 
