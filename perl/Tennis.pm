@@ -43,11 +43,4 @@ class Tennis::Game {
 
 };
 
-
-class Tennis::Game1 :isa(Tennis::Game) {};
-
-class Tennis::Game2 :isa(Tennis::Game) {};
-
-class Tennis::Game3 :isa(Tennis::Game) {};
-
 1;

@@ -50,31 +50,25 @@ my @test_cases = (
 
 use_ok "Tennis";
 
-my @modules_to_test = ( "Tennis::Game1", "Tennis::Game2", "Tennis::Game3" );
+subtest "Testing Tennis::Game" => sub {
 
-foreach my $module (@modules_to_test) {
+    plan tests => scalar @test_cases;
 
-    subtest "Testing $module" => sub {
+    foreach my $test_data (@test_cases) {
+        my ($p1_score, $p2_score, $score, $p1_name, $p2_name) = @$test_data;
 
-        plan tests => scalar @test_cases;
+        my $game = Tennis::Game->new($p1_name, $p2_name);
 
-        foreach my $test_data (@test_cases) {
-            my ( $p1_score, $p2_score, $score, $p1_name, $p2_name ) =
-              @$test_data;
+        my $max_score = $p1_score > $p2_score ? $p1_score : $p2_score;
 
-            my $game = $module->new( $p1_name, $p2_name );
-
-            my $max_score = $p1_score > $p2_score ? $p1_score : $p2_score;
-
-            foreach my $current_score ( 0 .. $max_score ) {
-                $game->won_point($p1_name) if $current_score < $p1_score;
-                $game->won_point($p2_name) if $current_score < $p2_score;
-            }
-
-            is( $game->score, $score, "$p1_score, $p2_score --> $score" );
+        foreach my $current_score (0 .. $max_score) {
+            $game->won_point($p1_name) if $current_score < $p1_score;
+            $game->won_point($p2_name) if $current_score < $p2_score;
         }
 
-    };
-}
+        is($game->score, $score, "$p1_score, $p2_score --> $score");
+    }
+
+};
 
 done_testing();
