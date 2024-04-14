@@ -32,8 +32,8 @@ class Tennis::Score {
 
 class Tennis::Game {
 
-    field $player_1 :reader;
-    field $player_2 :reader;
+    field $player_1;
+    field $player_2;
 
     BUILD (@playerNames) {
         ($player_1, $player_2) = map Tennis::Player->new(name => $_), @playerNames;
