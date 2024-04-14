@@ -10,6 +10,26 @@ class Tennis::Player {
 
 };
 
+class Tennis::Score {
+
+    field $player_1 :param;
+    field $player_2 :param;
+
+    method to_string () {
+        if (($player_1->points < 4 && $player_2->points < 4) && ($player_1->points + $player_2->points < 6)) {
+            my @p = ("Love", "Fifteen", "Thirty", "Forty");
+            my $s = $p[$player_1->points];
+            $player_1->points == $player_2->points ? "$s-All" : $s . "-" . $p[$player_2->points];
+        }
+        else {
+            return "Deuce" if ($player_1->points == $player_2->points);
+            my $s = $player_1->points > $player_2->points ? $player_1->name : $player_2->name;
+            (($player_1->points - $player_2->points) * ($player_1->points - $player_2->points) == 1) ? "Advantage $s" : "Win for $s";
+        }
+    };
+
+};
+
 class Tennis::Game {
 
     field $player_1 :reader;
@@ -29,16 +49,11 @@ class Tennis::Game {
     }
 
     method score () {
-        if (($player_1->points < 4 && $player_2->points < 4) && ($player_1->points + $player_2->points < 6)) {
-            my @p = ("Love", "Fifteen", "Thirty", "Forty");
-            my $s = $p[$player_1->points];
-            $player_1->points == $player_2->points ? "$s-All" : $s . "-" . $p[$player_2->points];
-        }
-        else {
-            return "Deuce" if ($player_1->points == $player_2->points);
-            my $s = $player_1->points > $player_2->points ? $player_1->name : $player_2->name;
-            (($player_1->points - $player_2->points) * ($player_1->points - $player_2->points) == 1) ? "Advantage $s" : "Win for $s";
-        }
+        my $score = Tennis::Score->new(
+            player_1 => $player_1,
+            player_2 => $player_2,
+        );
+        return $score->to_string;
     }
 
 };
