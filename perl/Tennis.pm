@@ -29,15 +29,15 @@ class Tennis::Game {
     }
 
     method score () {
-        if (($self->player_1->points < 4 && $self->player_2->points < 4) && ($self->player_1->points + $self->player_2->points < 6)) {
+        if (($player_1->points < 4 && $player_2->points < 4) && ($player_1->points + $player_2->points < 6)) {
             my @p = ("Love", "Fifteen", "Thirty", "Forty");
-            my $s = $p[$self->player_1->points];
-            $self->player_1->points == $self->player_2->points ? "$s-All" : $s . "-" . $p[$self->player_2->points];
+            my $s = $p[$player_1->points];
+            $player_1->points == $player_2->points ? "$s-All" : $s . "-" . $p[$player_2->points];
         }
         else {
-            return "Deuce" if ($self->player_1->points == $self->player_2->points);
-            my $s = $self->player_1->points > $self->player_2->points ? $self->player_1->name : $self->player_2->name;
-            (($self->player_1->points - $self->player_2->points) * ($self->player_1->points - $self->player_2->points) == 1) ? "Advantage $s" : "Win for $s";
+            return "Deuce" if ($player_1->points == $player_2->points);
+            my $s = $player_1->points > $player_2->points ? $player_1->name : $player_2->name;
+            (($player_1->points - $player_2->points) * ($player_1->points - $player_2->points) == 1) ? "Advantage $s" : "Win for $s";
         }
     }
 
